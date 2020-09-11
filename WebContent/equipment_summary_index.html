@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>设备汇总主页</title>
+<link href="css/base.css" type="text/css" rel="stylesheet">
+<link href="css/main.css" type="text/css" rel="stylesheet">
+<link href="css/page.css" type="text/css" rel="stylesheet">
+
+
+<script src="js/jquery-1.8.2.min.js" type="text/jscript"></script>
+<script src="js2/loginUser.js" type="text/jscript"></script>
+<script src="js2/initialization.js" type="text/jscript"></script>
+<!--[if lte IE 9]><script src="/js/selectivizr.js"></script><![endif]-->
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		getAllDeviceFromServer();
+	});
+	
+	function getAllDeviceFromServer()
+	{
+		$.ajax({ 
+			type: "get", 
+			url: "Device?method=all", 
+			dataType: "json", 
+			success: function (data) { 
+				if (data.flag == "0")
+				{
+					$.each(data.deviceList, function(a, b){
+						var element = createDeiveEliment(b);
+						$("div.equipment_summary_index").append(element);
+					});
+				}
+				else if (data.flag == "3")
+				{
+					$(location).attr('href', 'login.html');
+				}
+				
+			}, 
+			error: function (XMLHttpRequest, textStatus, errorThrown) { 
+				alert(errorThrown); 
+			} 
+		});
+	}
+	
+	function onDetailDevice(device)
+	{
+		window.location.href = "Device?method=detailDevice&device=" + device;
+	}
+	
+	function createDeiveEliment(equ)
+	{
+		var txtEleStr = "";
+		txtEleStr += "<div class=\"device_card\" onclick=\"onDetailDevice('" + equ.device + "')\">";
+		if (equ.status == "正常")
+		{
+			txtEleStr += "<div class='tag default'>" + equ.status + "</div>";
+		}
+		else if (equ.status == "停机")
+		{
+			txtEleStr += "<div class='tag disable'>" + equ.status + "</div>";
+		}
+		else
+		{
+			txtEleStr += "<div class='tag danger'>" + equ.status + "</div>";
+		}
+		txtEleStr += "<div class='ico'>";
+		txtEleStr += "<i>";
+		txtEleStr += equ.modality;
+		txtEleStr += "</i>";
+		txtEleStr += "<p>";
+		txtEleStr += equ.device;
+		txtEleStr += "</p>";
+		txtEleStr += "</div>";
+		txtEleStr += "<div class='txt'>";
+		txtEleStr += "<h1>";
+		txtEleStr += equ.name;
+		txtEleStr += "</h1>";
+		txtEleStr += "<p>设备编号：<span>";
+		txtEleStr += equ.equNo;
+		txtEleStr += "</span></p>";
+		txtEleStr += "<p>报价编号：<span>";
+		txtEleStr += equ.reportNo;
+		txtEleStr += "</span></p>";
+		txtEleStr += "<p>年保修价格：<span>";
+		txtEleStr += equ.mantanPrice;
+		txtEleStr += "</span></p>";
+		txtEleStr += "<p>使用单位：<span>";
+		txtEleStr += equ.useUnit;
+		txtEleStr += "</span></p>";
+		txtEleStr += "<p>责任人：<span>";
+		txtEleStr += equ.responseble;
+		txtEleStr += "</span></p>";
+		txtEleStr += "</div>";
+		txtEleStr += "</div>";
+		
+		
+		
+		var element = $(txtEleStr);
+		return element;
+	}
+</script>
+</head>
+
+<body>
+<div class="pacs_wrapper">
+	<div class="left">
+	
+		<div class="logo">
+			<div class="pic_lg"></div>
+			<p>龙岗区第三人民医院</p>
+		</div>
+		<div class="tree">
+			<ul>
+			  <li id="potionManage">
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>药剂管理</span></a>
+                    <ul>
+                        <li id="ordinary"><a class="second_level" href="ordinary_potion.html"><i class="ico-5"></i> <span>普通药剂</span></a></li>
+                        <li id="dangerous"><a class="second_level" href="dangerous_potion.html"><i class="ico-6"></i> <span>危化药剂</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>设备管理</span></a>
+                    <ul>
+						<li class="selected"><a class="second_level" href="equipment_summary_index.html"><i class="ico-1"></i> <span>设备汇总</span></a></li>
+						<li><a class="second_level" href="device_report.html"><i class="ico-2"></i> <span>设备报表</span></a></li>
+						<li ><a class="second_level" href="Important_Reminder.html"><i class="ico-3"></i> <span>重要提醒</span></a></li>
+                        <li><a class="second_level" href="add_Fault_Repair.html"><i class="ico-4"></i> <span>故障报修</span></a></li>
+                        <li><a class="second_level" href="repair_record.html"><i class="ico-5"></i> <span>维修记录</span></a></li>
+                        <li><a class="second_level" href="maintenance_record.html"><i class="ico-6"></i> <span>保养记录</span></a></li>
+                        <li><a class="second_level" href="check.html"><i class="ico-7"></i> <span>检测记录</span></a></li>
+                        <li><a class="second_level" href="device_usage_record.html"><i class="ico-5"></i> <span>设备使用记录</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>工作管理</span></a>
+                    <ul>
+						<li id="handover"><a class="second_level" href="change_shifts.html"><i class="ico-8"></i> <span>交接班</span></a></li>
+						<li id="dochandover"><a class="second_level" href="doctor_handover.html"><i class="ico-8"></i> <span>医生交接班</span></a></li>
+						<li id="techhandover"><a class="second_level" href="tech_handover.html"><i class="ico-8"></i> <span>技师交接班</span></a></li>
+            			<li id="docwork"><a class="second_level" href="pages/workload/ReportDoctor.html"><i class="ico-17"></i> <span>医生工作量统计</span></a></li>
+						<li id="techwork"><a class="second_level" href="pages/technician/technician.html"><i class="ico-18"></i> <span>技师工作量统计</span></a></li>
+           			    <li id="ImageQuality"><a class="second_level" href="pages/ImageQuality/ImageQuality.html"><i class="ico-19"></i> <span>图像质量统计</span></a></li>
+                        <li id="ReportQuality"><a class="second_level" href="pages/ReportQuality/ReportQuality.html"><i class="ico-20"></i> <span>报告质量统计</span></a></li>
+                        <li id="QualityControl"><a class="second_level" href="pages/QualityControl/QualityControl.html"><i class="ico-20"></i> <span>质控数量统计</span></a></li>
+            <li id="pathology"><a class="second_level" href="pages/pathology/Physicians.html"><i class="ico-17"></i> <span>病理百张床位统计</span></a></li>
+            <li id="SpecimenNormalization"><a class="second_level" href="pages/SpecimenNormalization/SpecimenNormalization.html"><i class="ico-17"></i> <span>规范化固定率统计</span></a></li>
+            <li id="DyeingSlice"><a class="second_level" href="pages/DyeingSlice/DyeingSlice.html"><i class="ico-17"></i> <span>染色切片优良率统计</span></a></li>
+            <li id="Diagnosis"><a class="second_level" href="pages/Diagnosis/Diagnosis.html"><i class="ico-17"></i> <span>病理诊断及时率统计</span></a></li>
+            <li id="Histopathologic"><a class="second_level" href="pages/Histopathologic/Histopathologic.html"><i class="ico-17"></i> <span>组织诊断及时率统计</span></a></li>
+            <li id="Cytologic"><a class="second_level" href="pages/Cytologic/Cytologic.html"><i class="ico-17"></i> <span>细胞诊断及时率统计</span></a></li>
+            <li id="MolecularIndoor"><a class="second_level" href="pages/MolecularIndoor/MolecularIndoor.html"><i class="ico-17"></i> <span>分子室内质控合格率</span></a></li>
+            <li id="ImmBetRoom"><a class="second_level" href="pages/ImmBetRoom/ImmBetRoom.html"><i class="ico-17"></i> <span>免疫组化室间合格率</span></a></li>
+            <li id="MolecularBetRoom"><a class="second_level" href="pages/MolecularBetRoom/MolecularBetRoom.html"><i class="ico-17"></i> <span>分子室间质评合格率</span></a></li>
+            <li id="CytQuality"><a class="second_level" href="pages/CytQuality/CytQuality.html"><i class="ico-17"></i> <span>细胞诊断质控符合率</span></a></li>
+            <li id="Paraffin"><a class="second_level" href="pages/Paraffin/Paraffin.html"><i class="ico-17"></i> <span>快速石蜡诊断符合率</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>人员管理</span></a>
+                    <ul>
+						<li ><a class="second_level" href="personal_management.html"><i class="ico-10"></i> <span>人员管理</span></a></li>
+						<!-- 
+                        <li><a class="second_level"><i class="ico-11"></i> <span>分组管理</span></a></li>
+                         -->
+                        <li ><a class="second_level" href="health_check.html"><i class="ico-12"></i> <span>体检记录</span></a></li>
+                        <li><a class="second_level" href="personal_dose.html"><i class="ico-13"></i> <span>个人剂量</span></a></li>
+                        <li ><a class="second_level" href="recuperation_record.html"><i class="ico-14"></i> <span>疗养记录</span></a></li>
+                        <li><a class="second_level" href="protection_training.html"><i class="ico-15"></i> <span>防护培训</span></a></li>
+                        <li ><a class="second_level" href="health_record.html"><i class="ico-16"></i> <span>保健假记录</span></a></li>
+                    </ul>
+                </li>
+            </ul>
+		</div>
+	</div>
+   <div class="main">
+			<div class="top_contorl">
+				<!--
+					<div class="t-l"><a class="back" href="#"><i class="back_btn"></i><span>返回</span></a></div>
+					<div class="t-r"><a class="save" href="">保存</a></div>
+				-->
+				<div class="msg_login">
+					<div class="user"><i class="pic"></i><span id="loginUser"></span></div>
+					<div class="btn"><i></i></div>
+				</div>
+			</div>		
+			<div class="box">
+				<div class="add_btn"><a href="equipment_summary.html">新增</a></div>
+				<div class="equipment_summary_index">
+				</div>
+			</div>
+   		
+   </div>
+    
+</div>    
+<!--end of  pacs_wrapper -->
+	
+</body>
+</html>

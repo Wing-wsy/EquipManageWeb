@@ -1,0 +1,119 @@
+@charset "utf-8";
+/*弹出框 */
+#tipMessage{
+	z-index: 9;
+	display:none;
+	}
+.tipMessage{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+}
+/*弹出框外框样式*/
+.tipMessage .general_layer{
+	position:absolute;
+	left: 30%;
+	top: 25%;
+	width: 40%;
+	min-width:30rem;
+	background: rgba(255,255,255,0.95);
+	z-index: 999;
+	box-shadow: 0 0 0.5rem 0.1rem rgba(0,0,0,0.5);
+	border-radius: 0.2rem;
+	}
+/*弹出框标题样式*/
+.tipMessage .general_layer .tc_title{
+	height: 2rem;
+	width: 100%;
+	border-bottom: 1px solid #aaa;
+	background: #369;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+	color: #ccc;
+	}
+.tipMessage .general_layer .tc_title h2{
+	font-size: 0.8rem;
+	line-height: 2rem;
+	color: #e2e2e2;
+	margin-left: 1rem;
+	}
+.tipMessage .general_layer .tc_title .close{
+	height: 2rem;
+	width: 3rem;
+	text-align: center;
+	line-height: 2rem;
+	}
+.tipMessage .general_layer .tc_title .close a{
+	display:block;
+	color:#ccc;
+	}
+/*弹出框文本内容样式*/
+.tipMessage .general_layer .tc_content{
+	font-size: 1.3rem;
+	padding: 2rem 4rem;
+	line-height: 2rem;
+	}
+.tipMessage .general_layer .tc_content	.pic{
+	float:left;
+	margin-right:1rem;
+	}
+.tipMessage .general_layer .tc_content	.contentCon{min-height: 5rem;}
+.tipMessage .general_layer .tc_content	.contentCon p{text-align: left;}
+.tipMessage .general_layer .tc_content	.contentCon .tips{color: #c84328;}
+/*弹出框按钮样式*/
+.tipMessage .general_layer .tc_content	.btnBox{
+	margin:2rem auto 0rem;
+	text-align:center;
+	}
+.tipMessage .general_layer .tc_content	.btnBox	.btn_sure{
+	display: inline-block;
+	background-color: #369;
+	color: #fff;
+	width: 8rem;
+	height: 3rem;
+	letter-spacing: 0.8rem;
+	padding-left: 0.8rem;
+	line-height: 3rem;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 0.4rem;
+	/*padding: 0.5rem 2rem;*/
+	}
+.tipMessage .general_layer .tc_content	.btnBox	.btn_cancel{
+	display: inline-block;
+	background-color: #ddd;
+	margin-left: 2rem;
+	width: 8rem;
+	height: 3rem;
+	letter-spacing: 0.8rem;
+	padding-left: 0.8rem;
+	line-height: 3rem;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 0.4rem;
+	}
+/*弹出框备注信息样式*/	
+.smallTip{
+	font-size: 1rem;
+	color: #999999;
+	margin-top: 0.5rem;
+	}
+.smallTip span{
+	background:#ccc;
+	color:#fff;
+	border-radius:0.2rem;
+	padding: 0 0 0 0.4rem;
+	margin-right:0.4rem;
+	}
+.download{
+	font-size:1rem;
+	color:#0066cc;
+	}
+.download:hover{
+	text-decoration:underline;
+	color:#0066cc;
+	}	

@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>报告质量统计</title>
+<link href="../../css/base.css" type="text/css" rel="stylesheet">
+<link href="../../css/main.css" type="text/css" rel="stylesheet">
+<link href="../../css/page.css" type="text/css" rel="stylesheet">
+
+<script type="text/javascript" src="../../js/config.js"></script>
+<script src="../../js/jquery-1.8.2.min.js" type="text/jscript"></script>
+<script src="../../js2/userAjax.js" type="text/jscript"></script>
+<script src="../../js2/modalityAndDevice3.js" type="text/jscript"></script>
+<script src="../loginUser1.js" type="text/jscript"></script>
+<script src="../../js2/initialization.js" type="text/jscript"></script>
+<!--[if lte IE 9]><script src="/js/selectivizr.js"></script><![endif]-->
+</head>
+
+<body>
+<div class="pacs_wrapper">
+	<div class="left">
+		<div class="logo">
+			<div class="pic_lg"></div>
+			<p>龙岗区第三人民医院</p>
+		</div>
+		<div class="tree">
+			<ul>
+			<li id="potionManage">
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>药剂管理</span></a>
+                    <ul>
+                        <li id="ordinary"><a class="second_level" href="../../ordinary_potion.html"><i class="ico-5"></i> <span>普通药剂</span></a></li>
+                        <li id="dangerous"><a class="second_level" href="../../dangerous_potion.html"><i class="ico-6"></i> <span>危化药剂</span></a></li>
+                    </ul>
+                </li>
+        <li>
+          <a class="first_level"><i class="icon-plus-sign"></i> <span>设备管理</span></a>
+          <ul>
+			<li><a class="second_level" href="../../equipment_summary_index.html"><i class="ico-1"></i> <span>设备汇总</span></a></li>
+          	<li><a class="second_level" href="../../device_report.html"><i class="ico-2"></i> <span>设备报表</span></a></li>
+          	<li><a class="second_level" href="../../Important_Reminder.html"><i class="ico-3"></i> <span>重要提醒</span></a></li>
+            <li><a class="second_level" href="../../add_Fault_Repair.html"><i class="ico-4"></i> <span>故障报修</span></a></li>
+            <li><a class="second_level" href="../../repair_record.html"><i class="ico-5"></i> <span>维修记录</span></a></li>
+            <li><a class="second_level" href="../../maintenance_record.html"><i class="ico-6"></i> <span>保养记录</span></a></li>
+            <li><a class="second_level" href="../../check.html"><i class="ico-7"></i> <span>检测记录</span></a></li>
+			<li><a class="second_level" href="../../device_usage_record.html"><i class="ico-5"></i> <span>设备使用记录</span></a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="first_level"><i class="icon-plus-sign"></i> <span>工作管理</span></a>
+          <ul>
+						<li><a class="second_level" href="../../change_shifts.html"><i class="ico-8"></i> <span>交接班</span></a></li>
+						<li><a class="second_level" href="../../change_shifts.html"><i class="ico-8"></i> <span>医生交接班</span></a></li>
+						<li><a class="second_level" href="../../tech_handover.html"><i class="ico-8"></i> <span>技师交接班</span></a></li>
+            <!--<li><a class="second_level"><i class="ico-9"></i> <span>制度预案</span></a></li>-->
+            <li><a class="second_level" href="../workload/ReportDoctor.html"><i class="ico-17"></i> <span>医生工作量统计</span></a></li>
+						<li><a class="second_level" href="../technician/technician.html"><i class="ico-18"></i> <span>技师工作量统计</span></a></li>
+            <li><a class="second_level" href="../ImageQuality/ImageQuality.html"><i class="ico-19"></i> <span>图像质量统计</span></a></li>
+            <li class="selected"><a class="second_level"><i class="ico-20"></i> <span>报告质量统计</span></a></li>
+            <li><a class="second_level" href="../QualityControl/QualityControl.html"><i class="ico-20"></i> <span>质控数量统计</span></a></li>
+            <li id="pathology"><a class="second_level" href="../pathology/Physicians.html"><i class="ico-17"></i> <span>病理百张床位统计</span></a></li>
+            <li id="SpecimenNormalization"><a class="second_level" href="../SpecimenNormalization/SpecimenNormalization.html"><i class="ico-17"></i> <span>规范化固定率统计</span></a></li>
+            <li id="DyeingSlice"><a class="second_level" href="../DyeingSlice/DyeingSlice.html"><i class="ico-17"></i> <span>染色切片优良率统计</span></a></li>
+            <li id="Diagnosis"><a class="second_level" href="../Diagnosis/Diagnosis.html"><i class="ico-17"></i> <span>病理诊断及时率统计</span></a></li>
+            <li id="Histopathologic"><a class="second_level" href="../Histopathologic/Histopathologic.html"><i class="ico-17"></i> <span>组织诊断及时率统计</span></a></li>
+            <li id="Cytologic"><a class="second_level" href="../Cytologic/Cytologic.html"><i class="ico-17"></i> <span>细胞诊断及时率统计</span></a></li>
+            <li id="MolecularIndoor"><a class="second_level" href="../MolecularIndoor/MolecularIndoor.html"><i class="ico-17"></i> <span>分子室内质控合格率</span></a></li>
+            <li id="ImmBetRoom"><a class="second_level" href="../ImmBetRoom/ImmBetRoom.html"><i class="ico-17"></i> <span>免疫组化室间合格率</span></a></li>
+            <li id="MolecularBetRoom"><a class="second_level" href="../MolecularBetRoom/MolecularBetRoom.html"><i class="ico-17"></i> <span>分子室间质评合格率</span></a></li>
+            <li id="CytQuality"><a class="second_level" href="../CytQuality/CytQuality.html"><i class="ico-17"></i> <span>细胞诊断质控符合率</span></a></li>
+            <li id="Paraffin"><a class="second_level" href="../Paraffin/Paraffin.html"><i class="ico-17"></i> <span>快速石蜡诊断符合率</span></a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="first_level"><i class="icon-plus-sign"></i> <span>人员管理</span></a>
+          <ul>
+						<li ><a class="second_level" href="../../personal_management.html"><i class="ico-10"></i> <span>人员管理</span></a></li>
+            <li><a class="second_level" href="../../health_check.html"><i class="ico-12"></i> <span>体检记录</span></a></li>
+            <li><a class="second_level" href="../../personal_dose.html"><i class="ico-13"></i> <span>个人剂量</span></a></li>
+            <li><a class="second_level" href="../../recuperation_record.html"><i class="ico-14"></i> <span>疗养记录</span></a></li>
+            <li><a class="second_level" href="../../protection_training.html"><i class="ico-15"></i> <span>防护培训</span></a></li>
+            <li><a class="second_level" href="../../health_record.html"><i class="ico-16"></i> <span>保健假记录</span></a></li>
+          </ul>
+        </li>
+      </ul>
+		</div>
+	</div>
+  <div class="main">
+  <!-- 
+		<div class="top_contorl">
+			<div class="t-l"><a class="back" href="../../check.html"><i class="back_btn"></i><span>返回</span></a></div>
+			<div class="t-r"><a class="save" href="javascript:void(0)" onclick="onButtonSave()">保存</a></div>
+		</div> -->
+		<div class="container">
+			<div class="equipment_summary">
+				<div class="title f14 purple">报告质量统计</div>
+			</div>
+		</div>
+		<!-- 报告医生工作量 -->
+    <div class="container">
+				<div class="equipment_summary mb10">
+					<div style="padding: 0;border-bottom: 1px solid #F2DCFB;" class="content">
+						<form>
+							<ul style="margin:0;">
+								<div class="form" style="margin-bottom: 10px;">
+									<li style="width:220px;">
+										<span style="display:inline-block;font-size: 16px;line-height:32px;font-weight: bold;">审核医生审核报告质量统计</span>
+                  </li>
+                  <li style="width:100px;">
+										<select name="" id="level-doctor" style="width: 70px;">
+											<option value="A">A级</option>
+                      <option value="B">B级</option>
+                      <option value="C">C级</option>
+                      <option value="D">D级</option>
+										</select>
+									</li>
+									<li style="width: 100px;">
+										<select name="" id="device" style="width: 70px;">
+											  <!-- <option value="1">CT</option>
+						                      <option value="2">DR</option>
+						                      <option value="3">MR</option>
+						                      <option value="4">MG</option> -->
+										</select>
+									</li>
+									<li style="width: 100px;">
+										<select name="" id="time" style="width: 70px;">
+                      <option value="7">月</option>
+                      <option value="4">年</option>
+										</select>
+									</li>
+									<li style="width: 180px">
+										<div class="w_2">
+											<input style="width:160px" placeholder="请选择时间段" id="chart11">
+										</div>
+									</li>
+									<li style="width: 180px">
+										<div class="w_2">
+											<input style="width:160px" placeholder="请选择时间段" id="chart12">
+										</div>
+									</li>
+									<li style="width: 100px;">
+										<select name="" id="vsecurity" style="width: 100px;">
+										</select>
+									</li>
+								</div>
+							</ul>
+						</form>
+					</div>
+        </div>
+        <div id="check-doctor" style="height:400px;"></div>
+		</div>
+		<!-- 报告医生工作量结束 -->
+
+		<!-- 检查技师工作量 -->
+    <div class="container">
+				<div class="equipment_summary mb10">
+					<div style="padding: 0;border-bottom: 1px solid #F2DCFB;" class="content">
+						<form>
+							<ul style="margin:0;">
+								<div class="form" style="margin-bottom: 10px;">
+									<li style="width:190px;">
+										<span style="display:inline-block;font-size: 16px;line-height:32px;font-weight: bold;">报告医生报告质量统计</span>
+				                  </li>
+				                  <li style="width:100px;">
+										<select name="" id="level-doctor1" style="width: 70px;">
+											<option value="A">A级</option>
+						                      <option value="B">B级</option>
+						                      <option value="C">C级</option>
+						                      <option value="D">D级</option>
+										</select>
+									</li>
+									<li style="width: 100px;">
+										<select name="" id="device1" style="width: 70px;">
+											  <!-- <option value="1">CT</option>
+						                      <option value="2">DR</option>
+						                      <option value="3">MR</option>
+						                      <option value="4">MG</option> -->
+										</select>
+									</li>
+									<li style="width: 100px;">
+										<select name="" id="time1" style="width: 70px;">
+					                      <option value="7">月</option>
+					                      <option value="4">年</option>
+										</select>
+									</li>
+									<li style="width: 180px">
+										<div class="w_2">
+											<input style="width:160px" placeholder="请选择时间段" id="chart21">
+										</div>
+									</li>
+									<li style="width: 180px">
+										<div class="w_2">
+											<input style="width:160px" placeholder="请选择时间段" id="chart22">
+										</div>
+									</li>
+									<li style="width: 100px;">
+										<select name="" id="vsecurity1" style="width: 100px;">
+										</select>
+									</li>
+								</div>
+							</ul>
+						</form>
+					</div>
+        </div>
+        <div id="report-doctor" style="height:400px;"></div>
+		</div>
+		<!-- 检查技师工作量结束 -->
+  </div>
+</div>    
+<!--end of  pacs_wrapper -->
+
+<!-- laydate.js -->
+
+<script src="../../js/laydate/laydate.js"></script>
+<script src="../../js2/echarts.min.js"></script>
+<script src="ReportQuality.js"></script>
+<!--  -->
+</body>
+</html>

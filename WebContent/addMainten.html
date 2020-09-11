@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>新增保养记录</title>
+<link href="css/base.css" type="text/css" rel="stylesheet">
+<link href="css/main.css" type="text/css" rel="stylesheet">
+<link href="css/page.css" type="text/css" rel="stylesheet">
+<script src="js/jquery-1.8.2.min.js" type="text/jscript"></script>
+<script src="js2/loginUser.js" type="text/jscript"></script>
+<script src="js2/modalityAndDevice.js" type="text/jscript"></script>
+<script src="js2/initialization.js" type="text/jscript"></script>
+<script type="text/javascript">
+	function onButtonSave()
+	{
+		var obj = {};
+		obj.modality = window.g_device;
+		obj.device = $("#device").find("option:selected").text();
+		obj.maintenPerson = $("#maintenPerson").val();
+		obj.maintenDate = $("#maintenDate").val();
+		obj.confirmPerson = $("#confirmPerson").val();
+		obj.maintenContent = $("#maintenContent").val();
+		
+		
+		$.ajax({ 
+			type: "get", 
+			url: "Device?method=addMainten", 
+			contentType: "application/json; charset=utf-8",
+			data: obj,
+			dataType: "json", 
+			success: function (data) { 
+				if (data.flag == "0")
+				{
+					alert("添加成功!");
+				}
+				else if (data.flag == "3")
+				{
+					$(location).attr('href', 'login.html');
+				}
+				else
+				{
+					alert(data.msg);
+				}
+			}, 
+			error: function (XMLHttpRequest, textStatus, errorThrown) { 
+				alert(errorThrown); 
+			} 
+		});	
+	}
+</script>
+<!--[if lte IE 9]><script src="/js/selectivizr.js"></script><![endif]-->
+</head>
+
+<body>
+<div class="pacs_wrapper">
+	<div class="left">
+	
+		<div class="logo">
+			<div class="pic_lg"></div>
+			<p>龙岗区第三人民医院</p>
+		</div>
+		<div class="tree">
+			<ul>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>设备管理</span></a>
+                    <ul>
+						<li><a class="second_level" href="equipment_summary_index.html"><i class="ico-1"></i> <span>设备汇总</span></a></li>
+						<li><a class="second_level" href="device_report.html"><i class="ico-2"></i> <span>设备报表</span></a></li>
+						<li ><a class="second_level" href="Important_Reminder.html"><i class="ico-3"></i> <span>重要提醒</span></a></li>
+                        <li><a class="second_level" href="add_Fault_Repair.html"><i class="ico-4"></i> <span>故障报修</span></a></li>
+                        <li><a class="second_level" href="repair_record.html"><i class="ico-5"></i> <span>维修记录</span></a></li>
+                        <li class="selected"><a class="second_level"><i class="ico-6"></i> <span>保养记录</span></a></li>
+                        <li><a class="second_level" href="check.html"><i class="ico-7"></i> <span>检测记录</span></a></li>
+                        <li><a class="second_level" href="device_usage_record.html"><i class="ico-5"></i> <span>设备使用记录</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>工作管理</span></a>
+                    <ul>
+						<li id="handover"><a class="second_level" href="change_shifts.html"><i class="ico-8"></i> <span>交接班</span></a></li>
+						<li id="dochandover"><a class="second_level" href="doctor_handover.html"><i class="ico-8"></i> <span>医生交接班</span></a></li>
+						<li id="techhandover"><a class="second_level" href="tech_handover.html"><i class="ico-8"></i> <span>技师交接班</span></a></li>
+            			<li id="docwork"><a class="second_level" href="pages/workload/ReportDoctor.html"><i class="ico-17"></i> <span>医生工作量统计</span></a></li>
+						<li id="techwork"><a class="second_level" href="pages/technician/technician.html"><i class="ico-18"></i> <span>技师工作量统计</span></a></li>
+           			    <li id="ImageQuality"><a class="second_level" href="pages/ImageQuality/ImageQuality.html"><i class="ico-19"></i> <span>图像质量统计</span></a></li>
+                        <li id="ReportQuality"><a class="second_level" href="pages/ReportQuality/ReportQuality.html"><i class="ico-20"></i> <span>报告质量统计</span></a></li>
+                        <li id="QualityControl"><a class="second_level" href="pages/QualityControl/QualityControl.html"><i class="ico-20"></i> <span>质控数量统计</span></a></li>
+            <li id="pathology"><a class="second_level" href="pages/pathology/Physicians.html"><i class="ico-17"></i> <span>病理百张床位统计</span></a></li>
+            <li id="SpecimenNormalization"><a class="second_level" href="pages/SpecimenNormalization/SpecimenNormalization.html"><i class="ico-17"></i> <span>规范化固定率统计</span></a></li>
+            <li id="DyeingSlice"><a class="second_level" href="pages/DyeingSlice/DyeingSlice.html"><i class="ico-17"></i> <span>染色切片优良率统计</span></a></li>
+            <li id="Diagnosis"><a class="second_level" href="pages/Diagnosis/Diagnosis.html"><i class="ico-17"></i> <span>病理诊断及时率统计</span></a></li>
+            <li id="Histopathologic"><a class="second_level" href="pages/Histopathologic/Histopathologic.html"><i class="ico-17"></i> <span>组织诊断及时率统计</span></a></li>
+            <li id="Cytologic"><a class="second_level" href="pages/Cytologic/Cytologic.html"><i class="ico-17"></i> <span>细胞诊断及时率统计</span></a></li>
+            <li id="MolecularIndoor"><a class="second_level" href="pages/MolecularIndoor/MolecularIndoor.html"><i class="ico-17"></i> <span>分子室内质控合格率</span></a></li>
+            <li id="ImmBetRoom"><a class="second_level" href="pages/ImmBetRoom/ImmBetRoom.html"><i class="ico-17"></i> <span>免疫组化室间合格率</span></a></li>
+            <li id="MolecularBetRoom"><a class="second_level" href="pages/MolecularBetRoom/MolecularBetRoom.html"><i class="ico-17"></i> <span>分子室间质评合格率</span></a></li>
+            <li id="CytQuality"><a class="second_level" href="pages/CytQuality/CytQuality.html"><i class="ico-17"></i> <span>细胞诊断质控符合率</span></a></li>
+            <li id="Paraffin"><a class="second_level" href="pages/Paraffin/Paraffin.html"><i class="ico-17"></i> <span>快速石蜡诊断符合率</span></a></li>
+
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>人员管理</span></a>
+                    <ul>
+						<li ><a class="second_level" href="personal_management.html"><i class="ico-10"></i> <span>人员管理</span></a></li>
+						<!-- 
+                        <li><a class="second_level"><i class="ico-11"></i> <span>分组管理</span></a></li>
+                         -->
+                        <li ><a class="second_level" href="health_check.html"><i class="ico-12"></i> <span>体检记录</span></a></li>
+                        <li><a class="second_level" href="personal_dose.html"><i class="ico-13"></i> <span>个人剂量</span></a></li>
+                        <li ><a class="second_level" href="recuperation_record.html"><i class="ico-14"></i> <span>疗养记录</span></a></li>
+                        <li><a class="second_level" href="protection_training.html"><i class="ico-15"></i> <span>防护培训</span></a></li>
+                        <li ><a class="second_level" href="health_record.html"><i class="ico-16"></i> <span>保健假记录</span></a></li>
+                    </ul>
+                </li>
+            </ul>
+		</div>	
+	</div>
+   <div class="main">
+			<div class="top_contorl">
+					<div class="t-l"><a class="back" href="maintenance_record.html"><i class="back_btn"></i><span>返回</span></a></div>
+					<div class="t-r"><a class="save" href="javascript:void(0)" onclick="onButtonSave()">保存</a></div>
+			</div>		
+			<div class="container">
+				<div class="equipment_summary">
+					<div class="title f14 purple">新增保养记录</div>
+					<div class="content">
+						<form>
+							<ul class="m_0">
+								<div class="form">
+									<li style="width:100%;" id="modalityLi">
+										<label class="f14">设备类型：</label>
+									</li>
+								</div>
+								<div class="form">
+									
+									<li>
+										<label class="f14">设备型号：</label>
+									
+										<select name="" id="device">
+										</select>
+									</li>
+									
+								</div>
+								
+								<div class="form">
+								
+									<li>
+										<label class="f14">保养技师：</label>
+										<input type="text" alt="" value="" placeholder="" id="maintenPerson">
+									</li>
+									<li>
+										<label class="f14">确认技师：</label>
+										<input type="text" alt="" value="" placeholder="" id="confirmPerson">
+									</li>
+									
+									<li>
+										<label class="f14">保养日期：</label>
+										<input type="date" alt="" value="" placeholder="" id="maintenDate">
+									</li>
+									
+									
+								</div>
+								
+								<div class="form h120">
+									
+									<li class="w100">
+										<label class="f14">保养类容：</label>
+										<textarea class="t_area" id="maintenContent"></textarea>
+									</li>
+									
+									
+								</div>
+								
+								
+								
+								
+								
+								
+								
+							</ul>
+							
+							
+							
+						</form>
+					</div>
+				</div>
+			</div>
+   		
+   </div>
+    
+</div>    
+<!--end of  pacs_wrapper -->
+	
+</body>
+</html>

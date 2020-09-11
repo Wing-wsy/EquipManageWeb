@@ -1,0 +1,888 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>设备报表</title>
+<link href="css/base.css" type="text/css" rel="stylesheet">
+<link href="css/main.css" type="text/css" rel="stylesheet">
+<link href="css/page.css" type="text/css" rel="stylesheet">
+
+<script src="js/jquery-1.8.2.min.js" type="text/jscript"></script>
+<script src="js2/modalityAndDevice2.js" type="text/jscript"></script>
+<script src="js2/loginUser.js" type="text/jscript"></script>
+<script src="js2/echarts.min.js" type="text/jscript"></script>
+<script src="js2/initialization.js" type="text/jscript"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	window.currentDetectionType = "1";
+
+	$("#queryBtn").on("click", function(){
+		queryStatisList();
+	});
+	
+	$("#check1").on("click", function(){
+		if (window.currentDetectionType == "1")
+		{
+			return;
+		}
+
+		if (window.currentDetectionType == "2") 
+		{
+			$("#check2").removeClass("selected");
+		}
+
+		$(this).addClass("selected");
+		window.currentDetectionType = "1";
+		
+		makeChart();
+	});
+	
+	$("#check2").on("click", function(){
+		if (window.currentDetectionType == "2")
+		{
+			return;
+		}
+
+		if (window.currentDetectionType == "1")
+		{
+			$("#check1").removeClass("selected");
+		}
+
+		$(this).addClass("selected");
+		window.currentDetectionType = "2";
+		
+		makeChart();
+	});
+	
+	initUI();
+	
+	queryStatisList();
+});
+
+function getNow(s) {
+    return s < 10 ? '0' + s: s;
+}
+
+function initUI()
+{
+	var myDate = new Date();
+	var year = myDate.getFullYear();
+	var month = myDate.getMonth() + 1;
+	var date = myDate.getDate();
+	
+	var begin = year + "-" + getNow(month)+ "-" + "01";
+	var end = year + "-" + getNow(month) + "-" + getNow(date);
+	$("#startDate").val(begin);
+	$("#endDate").val(end);
+}
+
+function makeBreakChart(workHour, breakHour)
+{
+	var myChart = echarts.init(document.getElementById('chart2'));
+	
+	option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} 小时 ({d}%)"
+		    },
+		    legend: {
+		        orient : 'vertical',
+		        x : 'left',
+		        data:['正常','停机']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'center',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    calculable : true,
+		    series : [
+		        {
+		            name:'机器状态',
+		            type:'pie',
+		            radius : ['50%', '70%'],
+		            itemStyle : {
+		                normal : {
+		                    label : {
+		                        show : false
+		                    },
+		                    labelLine : {
+		                        show : false
+		                    }
+		                },
+		                emphasis : {
+		                    label : {
+		                        show : false,
+		                        position : 'center',
+		                        textStyle : {
+		                            fontSize : '10',
+		                            fontWeight : 'normal'
+		                        }
+		                    }
+		                }
+		            },
+		            data:[
+		                {value:workHour, name:'正常'},
+		                {value:breakHour, name:'停机'}
+		            ]
+		        }
+		    ]
+		};           
+	
+	myChart.setOption(option);
+}
+
+function makeOccurChart(occurList)
+{
+	var sumList = [];
+	$.each(occurList, function (a,b) {
+		sumList[a] = b.reportSum;
+	});
+	var device = $("#device").find("option:selected").text();
+
+	var myChart = echarts.init(document.getElementById('chart3'));
+
+    option = {
+		title : {
+			text: "故障次数统计(" + device + ")",
+			subtext:"总故障次数:" + window.totalOccur + "次" 
+		},
+		tooltip : {
+			trigger: 'axis'
+		},
+		legend: {
+			data:['故障次数']
+		},
+		toolbox: {
+			show : true,
+			feature : {
+				mark : {show: true},
+				dataView : {show: true, readOnly: false},
+				magicType : {show: true, type: ['line', 'bar']},
+				restore : {show: true},
+				saveAsImage : {show: true}
+			}
+		},
+		calculable : true,
+		xAxis : [
+			{
+				type : 'category',
+				boundaryGap : false,
+				data : window.dateList
+			}
+		],
+		yAxis : [
+			{
+				type : 'value',
+				axisLabel : {
+					formatter: '{value} 次'
+				}
+			}
+		],
+		series : [
+			{
+				name:'检查次数',
+				type:'line',
+				data:sumList,
+				markPoint : {
+					data : [
+						{type : 'max', name: '最大值'},
+						{type : 'min', name: '最小值'}
+					]
+				}
+			}
+		]
+	};
+
+    myChart.setOption(option);
+	
+}
+
+function makeChart()
+{
+	var dataList = null;
+	var subText = "";
+	var legendText = "";
+	var unit = "";
+	var bigTitle = "";
+	var device = $("#device").find("option:selected").text();
+	if (window.currentDetectionType == "1")
+	{
+		dataList = window.timesList;
+		subText = "总检查次数:" + window.totalCount;
+		legendText = "检查次数";
+		unit = "人次";
+		bigTitle = "检查次数统计(" + device + ")";
+	}
+	else if (window.currentDetectionType == "2")
+	{
+		dataList = window.incomeList;
+		subText = "总收入:" + window.totalIncome;
+		legendText = "收入";
+		unit = "元";
+		bigTitle = "收入统计(" + device + ")";
+	}
+
+    var myChart = echarts.init(document.getElementById('chart1'));
+    
+
+    option = {
+		title : {
+			text: bigTitle,
+			subtext: subText 
+		},
+		tooltip : {
+			trigger: 'axis'
+		},
+		legend: {
+			data:[legendText]
+		},
+		toolbox: {
+			show : true,
+			feature : {
+				mark : {show: true},
+				dataView : {show: true, readOnly: false},
+				magicType : {show: true, type: ['line', 'bar']},
+				restore : {show: true},
+				saveAsImage : {show: true}
+			}
+		},
+		calculable : true,
+		xAxis : [
+			{
+				type : 'category',
+				boundaryGap : false,
+				data : window.dateList
+			}
+		],
+		yAxis : [
+			{
+				type : 'value',
+				axisLabel : {
+					formatter: '{value} ' + unit
+				}
+			}
+		],
+		series : [
+			{
+				name:legendText,
+				type:'line',
+				data:dataList,
+				markPoint : {
+					data : [
+						{type : 'max', name: '最大值'},
+						{type : 'min', name: '最小值'}
+					]
+				}
+			}
+		]
+	};
+
+    myChart.setOption(option);
+}
+
+function queryStatisList()
+{
+	var modality = $("#modality").find("option:selected").text();
+	var device = $("#device").find("option:selected").text();
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	var dataType = $("#time").val();
+	
+	//故障次数统计
+	$.ajax({ 
+		type: "post", 
+		url: "Device?method=selectStatisticList", 
+		data: {"modality":modality, "device":device, "startDate":startDate, "endDate":endDate, "dateType":dataType},
+		dataType: "json", 
+		success: function (data) { 
+			if (data.flag == "0")
+			{
+				var dateList = [];
+				var timesList = [];
+				var incomeList = [];
+				$.each(data.list, function (a, b) {
+					dateList[a] = b.studyDate;
+					timesList[a] = b.times;
+					incomeList[a] = b.income;
+				});
+				window.dateList = dateList;
+				window.timesList = timesList;
+				window.incomeList = incomeList;
+				window.totalIncome = data.totalIncome;
+				window.totalOccur = data.totalOccur;
+				window.totalCount = data.totalCount;
+				
+				makeChart();
+				makeOccurChart(data.occurList);
+				
+			}
+			else if (data.flag == "3")
+			{
+				$(location).attr('href', 'login.html');
+			}
+			else
+			{
+				alert(data.msg);
+			}
+		}, 
+		error: function (XMLHttpRequest, textStatus, errorThrown) { 
+			alert(errorThrown); 
+		} 
+	});	
+	
+	//设备正常停机统计
+	$.ajax({ 
+		type: "post", 
+		url: "Device?method=selectStatisticListTingji", 
+		data: {"modality":modality, "device":device, "startDate":startDate, "endDate":endDate, "dateType":dataType},
+		dataType: "json", 
+		success: function (data) { 
+			if (data.flag == "0")
+			{
+				makeBreakChart(data.workHour, data.breakHour);
+			}
+			else if (data.flag == "3")
+			{
+				$(location).attr('href', 'login.html');
+			}
+			else
+			{
+				alert(data.msg);
+			}
+		}, 
+		error: function (XMLHttpRequest, textStatus, errorThrown) { 
+			alert(errorThrown); 
+		} 
+	});	
+	
+	
+	
+}
+</script>
+</head>
+
+<body>
+<div class="pacs_wrapper">
+	<div class="left">
+	
+		<div class="logo">
+			<div class="pic_lg"></div>
+			<p>龙岗区第三人民医院</p>
+		</div>
+		<div class="tree">
+			<ul>
+			<li id="potionManage">
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>药剂管理</span></a>
+                    <ul>
+                        <li id="ordinary"><a class="second_level" href="ordinary_potion.html"><i class="ico-5"></i> <span>普通药剂</span></a></li>
+                        <li id="dangerous"><a class="second_level" href="dangerous_potion.html"><i class="ico-6"></i> <span>危化药剂</span></a></li>
+                    </ul>
+                </li>
+        <li>
+          <a class="first_level"><i class="icon-plus-sign"></i> <span>设备管理</span></a>
+          <ul>
+			<li><a class="second_level" href="equipment_summary_index.html"><i class="ico-1"></i> <span>设备汇总</span></a></li>
+			<li class="selected"><a class="second_level" href="javascritp:void(0)"><i class="ico-2"></i> <span>设备报表</span></a></li>
+			<li><a class="second_level" href="Important_Reminder.html"><i class="ico-3"></i> <span>重要提醒</span></a></li>
+            <li><a class="second_level" href="add_Fault_Repair.html"><i class="ico-4"></i> <span>故障报修</span></a></li>
+            <li><a class="second_level" href="repair_record.html"><i class="ico-5"></i> <span>维修记录</span></a></li>
+            <li><a class="second_level" href="maintenance_record.html"><i class="ico-6"></i> <span>保养记录</span></a></li>
+            <li><a class="second_level" href="check.html"><i class="ico-7"></i> <span>检测记录</span></a></li>
+						<li><a class="second_level" href="device_usage_record.html"><i class="ico-5"></i> <span>设备使用记录</span></a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="first_level"><i class="icon-plus-sign"></i> <span>工作管理</span></a>
+          <ul>
+						<li id="handover"><a class="second_level" href="change_shifts.html"><i class="ico-8"></i> <span>交接班</span></a></li>
+						<li id="dochandover"><a class="second_level" href="doctor_handover.html"><i class="ico-8"></i> <span>医生交接班</span></a></li>
+						<li id="techhandover"><a class="second_level" href="tech_handover.html"><i class="ico-8"></i> <span>技师交接班</span></a></li>
+            			<li id="docwork"><a class="second_level" href="pages/workload/ReportDoctor.html"><i class="ico-17"></i> <span>医生工作量统计</span></a></li>
+						<li id="techwork"><a class="second_level" href="pages/technician/technician.html"><i class="ico-18"></i> <span>技师工作量统计</span></a></li>
+           			    <li id="ImageQuality"><a class="second_level" href="pages/ImageQuality/ImageQuality.html"><i class="ico-19"></i> <span>图像质量统计</span></a></li>
+                        <li id="ReportQuality"><a class="second_level" href="pages/ReportQuality/ReportQuality.html"><i class="ico-20"></i> <span>报告质量统计</span></a></li>
+                        <li id="QualityControl"><a class="second_level" href="pages/QualityControl/QualityControl.html"><i class="ico-20"></i> <span>质控数量统计</span></a></li>
+            <li id="pathology"><a class="second_level" href="pages/pathology/Physicians.html"><i class="ico-17"></i> <span>病理百张床位统计</span></a></li>
+            <li id="SpecimenNormalization"><a class="second_level" href="pages/SpecimenNormalization/SpecimenNormalization.html"><i class="ico-17"></i> <span>规范化固定率统计</span></a></li>
+            <li id="DyeingSlice"><a class="second_level" href="pages/DyeingSlice/DyeingSlice.html"><i class="ico-17"></i> <span>染色切片优良率统计</span></a></li>
+            <li id="Diagnosis"><a class="second_level" href="pages/Diagnosis/Diagnosis.html"><i class="ico-17"></i> <span>病理诊断及时率统计</span></a></li>
+            <li id="Histopathologic"><a class="second_level" href="pages/Histopathologic/Histopathologic.html"><i class="ico-17"></i> <span>组织诊断及时率统计</span></a></li>
+            <li id="Cytologic"><a class="second_level" href="pages/Cytologic/Cytologic.html"><i class="ico-17"></i> <span>细胞诊断及时率统计</span></a></li>
+            <li id="MolecularIndoor"><a class="second_level" href="pages/MolecularIndoor/MolecularIndoor.html"><i class="ico-17"></i> <span>分子室内质控合格率</span></a></li>
+            <li id="ImmBetRoom"><a class="second_level" href="pages/ImmBetRoom/ImmBetRoom.html"><i class="ico-17"></i> <span>免疫组化室间合格率</span></a></li>
+            <li id="MolecularBetRoom"><a class="second_level" href="pages/MolecularBetRoom/MolecularBetRoom.html"><i class="ico-17"></i> <span>分子室间质评合格率</span></a></li>
+            <li id="CytQuality"><a class="second_level" href="pages/CytQuality/CytQuality.html"><i class="ico-17"></i> <span>细胞诊断质控符合率</span></a></li>
+            <li id="Paraffin"><a class="second_level" href="pages/Paraffin/Paraffin.html"><i class="ico-17"></i> <span>快速石蜡诊断符合率</span></a></li>
+
+          </ul>
+        </li>
+        <li>
+          <a class="first_level"><i class="icon-plus-sign"></i> <span>人员管理</span></a>
+          <ul>
+						<li><a class="second_level" href="personal_management.html"><i class="ico-10"></i> <span>人员管理</span></a></li>
+            <li><a class="second_level" href="health_check.html"><i class="ico-12"></i> <span>体检记录</span></a></li>
+            <li><a class="second_level" href="personal_dose.html"><i class="ico-13"></i> <span>个人剂量</span></a></li>
+            <li><a class="second_level" href="recuperation_record.html"><i class="ico-14"></i> <span>疗养记录</span></a></li>
+            <li><a class="second_level" href="protection_training.html"><i class="ico-15"></i> <span>防护培训</span></a></li>
+            <li><a class="second_level" href="health_record.html"><i class="ico-16"></i> <span>保健假记录</span></a></li>
+          </ul>
+        </li>
+      </ul>
+		</div>		
+	</div>
+   <div class="main">
+			<div class="top_contorl">
+				<div class="msg_login">
+					<div class="user"><i class="pic"></i><span id="loginUser"></span></div>
+					<div class="btn"><i></i></div>
+				</div>
+			</div>		
+			
+			<div class="container">
+				<div class="equipment_summary">
+					
+					<div style="padding: 0;" class="content">
+						<form>
+							<ul style="margin:0;">
+								
+								<div class="form">
+									<li style="width:20%;"> 
+										<label class="f14">设备类型：</label>
+									
+										<select name="" id="modality">
+											<option value="">全部</option>
+										</select>
+									</li>
+									
+									<li style="width: 20%;">
+										<label class="f14">设备型号：</label>
+									
+										<select name="" id="device">
+											<option value="">全部</option>
+										</select>
+									</li>
+									
+									<li style="width: 40%;">
+										<label class="f14">统计时间段：</label>
+										<div class="w_2">
+											<input style="width:45%" type="date" value="" alt="" id="startDate">
+											<span class="t_span">至</span>
+											<input style="width:45%" type="date" value="" alt="" id="endDate">
+										</div>
+									</li>
+									<li style="width: 10%;">
+										<select name="" id="time" style="width: 100px">
+											<option value="10">日</option>
+											<option value="7">月</option>
+											<option value="4">年</option>
+										</select>
+									</li>
+									<li style="width: 10%;">
+										<a class="submit" id="queryBtn">统计</a>
+									</li>
+										
+								</div>
+							</ul>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="container d-rpt1">
+				<div class="title2">
+					<div class="base">
+						<ul>
+							<li class="selected" id="check1"><a href="#">检查次数</a></li>
+							<li id="check2"><a href="#">收入</a></li>
+						</ul>
+					</div>
+				</div >
+				<div class="r_chart" id="chart1">
+				</div>
+			</div>
+
+			<div class="container d-rpt2" id="chart2"></div>
+ 			<div class="container d-rpt3" id="chart3"></div>
+ 			<hr>
+
+			<!-- 同比/环比 -->
+      <div class="container" style="height: 500px;">
+					<div class="equipment_summary mb10" style="height: 70px;">
+						<div style="padding: 0;border-bottom: 1px solid #F2DCFB;" class="content">
+							<form>
+								<ul style="margin:0;">
+									<div class="form" style="margin-bottom: 10px;">
+										<li style="width:200px">
+											<span style="display:inline-block;font-size: 16px;line-height:32px;font-weight: bold;">收入统计(同比/环比)</span>
+										</li>
+										<li style="width:100px;">
+												<select name="" id="deviceType" class="modality" style="width: 70px;">
+													<option value="0">全部</option>
+													<!-- 
+													<option value="CT">CT</option>
+													<option value="DR">DR</option>
+													<option value="MG">MG</option>
+													<option value="MR">MR</option> -->
+												</select>
+											</li>
+											<li style="width: 400px">
+												<label class="f14">统计时间段：</label>
+												<div class="w_2">
+													<input style="width:200px" placeholder="请选择时间段" id="yearRange">
+												</div>
+											</li>
+									</div>
+								</ul>
+							</form>
+						</div>
+					</div>
+					<div id="yearonyear" style="height:400px;"></div>
+				</div>
+				
+			<!-- 人次同比/环比 -->
+      		<div class="container" style="height: 500px;">
+				<div class="equipment_summary mb10" style="height: 70px;">
+					<div style="padding: 0;border-bottom: 1px solid #F2DCFB;" class="content">
+						<form>
+							<ul style="margin:0;">
+								<div class="form" style="margin-bottom: 10px;">
+									<li style="width:200px">
+										<span style="display:inline-block;font-size: 16px;line-height:32px;font-weight: bold;">人次统计(同比/环比)</span>
+									</li>
+									<li style="width:100px;">
+										<select name="" id="deviceType1" class="modality" style="width: 70px;">
+											<option value="0">全部</option>
+											<!-- 
+											<option value="CT">CT</option>
+											<option value="DR">DR</option>
+											<option value="MG">MG</option>
+											<option value="MR">MR</option> -->
+										</select>
+									</li>
+									<li style="width: 400px">
+										<label class="f14">统计时间段：</label>
+										<div class="w_2">
+											<input style="width:200px" placeholder="请选择时间段" id="yearRange2">
+										</div>
+									</li>
+								</div>
+							</ul>
+						</form>
+					</div>
+				</div>
+				<div id="personTime" style="height:400px;"></div>
+			</div>
+  		
+	 </div>
+	 
+</div>    
+<!--end of  pacs_wrapper -->
+<!-- laydate.js -->
+<script src="js/laydate/laydate.js"></script>
+<script>
+//获取今年年份
+var today = new Date()
+var thisYear = today.getFullYear()  // 获取年份
+
+// 去年年份
+var lastYear = thisYear - 1
+
+// 年份时间段
+var yearStr = ''
+
+
+// 获取工作量数据
+function getNewData1(yearRange){
+    var echartDoctorWork = echarts.init(document.getElementById('yearonyear'));
+    var option = {
+      // color: ['#6F9BBA','#d1b068','#d31cd6'],   // 柱状颜色
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {
+        data: ''   // 所有设备数据，数组
+      },
+      toolbox: {
+        show: true,
+        orient: 'vertical',
+        left: 'right',
+        top: 'center',
+        feature: {
+          magicType: {show: true, type: ['stack']},
+          restore: {show: true}
+        }
+      },
+      calculable: true,
+      xAxis: {
+          type: 'category',
+          name: '月份',
+          axisTick: {show: false},
+          data: ''  // 月份 数组
+    },
+      yAxis: [
+        {
+          type: 'value',
+          name: '收入'
+        },
+        {
+			type: 'value',
+			name: '增长率'
+		}
+      ],
+      series: ''
+    }
+
+    
+    
+    if(!yearRange){
+        	// 年份范围字符串
+    		yearStr = lastYear + ',' + thisYear
+      }else{
+    		yearStr = yearRange.slice(0,4) + ',' + yearRange.slice(7,11)
+      }
+
+
+		
+		var deviceType = $("#deviceType").find('option:selected').val()  // 设备类型,传给后台
+		console.log('设备类型,传给后台',deviceType,yearStr)
+	
+	//设备收入统计环比/同比
+    $.ajax({
+      type: 'get',
+      url: 'Device?method=DeviceRevenueStatistics',
+      data: {"yearsList":yearStr,"Modality":deviceType},
+      contentType: "application/json; charset=utf-8",
+      dataType: 'json',
+      success: function(res){
+        var data = res.value
+
+        var series = [];  // 多组柱状图数据
+        var deviceArr = [];  // 设备数组
+        
+        for(var i=1;i<data.length;i++){
+            //push 设备数组
+            deviceArr.push(Object.keys(data[i]).toString())
+            // push 多组柱状图数据
+            series.push({
+              name: Object.keys(data[i]).toString(),
+              type: 'bar',
+              barGap: 0,
+              label: Object.keys(data[i]).toString(),
+              data: Object.values(data[i]).toString().split(','),
+              markLine: {
+                symbol: 'none',
+                itemStyle: {
+                  normal: {
+                    label: {
+                      show: true
+                    }
+                  }
+                },
+                data: [{type : 'average', name: '平均值'}]
+              }
+            })
+          }
+        
+        
+     	// 增长率
+		series[2].yAxisIndex = 1
+		series[2].type = 'line'
+
+        // 日期数组
+        option.xAxis.data = Object.values(data[0]).toString().split(',')
+        // 赋值设备数组
+        option.legend.data = deviceArr
+        // 赋值柱状图数组
+        option.series = series
+        
+        echartDoctorWork.setOption(option)
+      },
+      error: function(res){
+        console.log(res)
+      }
+    })
+	}
+	// doctor-work 首次加载报告医生工作量
+  	if ($('#yearonyear').length){
+    	getNewData1();
+	}
+	
+ 	// 首次加载人次表格
+  	if ($('#personTime').length){
+  	  getPersonTime();
+  	}
+	
+	// 切换设备
+	$("#deviceType").change(function(){
+		getNewData1();
+	})
+	
+	
+	// 获取人次数据
+	function getPersonTime(yearRange){
+	  var echartDoctorWork = echarts.init(document.getElementById('personTime'));
+	  var option = {
+	    // color: ['#6F9BBA','#d1b068','#d31cd6'],   // 柱状颜色
+	    tooltip: {
+	      trigger: 'axis',
+	      axisPointer: {
+	        type: 'shadow'
+	      }
+	    },
+	    legend: {
+	      data: ''   // 所有设备数据，数组
+	    },
+	    toolbox: {
+	      show: true,
+	      orient: 'vertical',
+	      left: 'right',
+	      top: 'center',
+	      feature: {
+	        magicType: {show: true, type: ['stack']},
+	        restore: {show: true}
+	      }
+	    },
+	    calculable: true,
+	    xAxis: {
+	        type: 'category',
+	        // name: '月份',
+	        axisTick: {show: false},
+	        data: ''  // 月份 数组
+	  },
+	    yAxis: [
+	      {
+	        type: 'value',
+	        name: '人次'
+				},
+				{
+					type: 'value',
+					name: '增长率'
+				}
+	    ],
+	    series: ''
+	  }
+	    
+	  if(!yearRange){
+	    // 年份范围字符串
+			yearStr = lastYear + ',' + thisYear
+	  }else{
+			yearStr = yearRange.slice(0,4) + ',' + yearRange.slice(7,11)
+	  }
+	
+			
+		var deviceType = $("#deviceType1").find('option:selected').val()  // 设备类型,传给后台
+		console.log('1,设备类型,传给后台',deviceType,'2.年时间段字符串',yearStr)
+	
+	  //人次统计环比/同比
+	  $.ajax({
+	    type: 'get',
+	    url: 'Device?method=DeviceExposureStatistics',
+	    data: {"yearsList":yearStr,"Modality":deviceType},
+	    dataType: 'json',
+	    success: function(res){
+	      var data = res.value
+	      var series = [];  // 多组柱状图数据
+	      var deviceArr = [];  // 设备数组
+	      
+	      for(var i=1;i<data.length;i++){
+	        // push 设备数组
+	        deviceArr.push(Object.keys(data[i]).toString())
+	        // push 多组柱状图数据
+	        series.push({
+	          name: Object.keys(data[i]).toString(),
+						type: 'bar',
+	          barGap: 0,
+	          label: Object.keys(data[i]).toString(),
+	          data: Object.values(data[i]).toString().split(','),
+	          markLine: {
+	            symbol: 'none',
+	            itemStyle: {
+	              normal: {
+	                label: {
+	                  show: true
+	                }
+	              }
+	            },
+	            data: [{type : 'average', name: '平均值'}]
+	          }
+					})
+				}
+				
+				// 增长率
+				series[2].yAxisIndex = 1
+				series[2].type = 'line'
+	
+	      // 日期数组
+	      option.xAxis.data = Object.values(data[0]).toString().split(',')
+	      // 赋值设备数组
+	      option.legend.data = deviceArr
+	      // 赋值柱状图数组
+				option.series = series
+				console.log(series, typeof series)
+	      
+	      echartDoctorWork.setOption(option)
+	    },
+	    error: function(res){
+	      console.log(res)
+	    }
+	  })
+	}
+	// 首次加载人次表格
+	if ($('#personTime').length){
+  		getPersonTime();
+	}
+	
+	// 切换设备
+	$("#deviceType1").change(function(){
+		getPersonTime();
+	})
+	
+	// 首次加载默认日期
+	var date = new Date;
+	var defaultDate = date.getFullYear() -1 + '-' + date.getFullYear()
+	
+	// 选择时间段1 laydate
+	laydate.render({
+  		elem: '#yearRange',
+		trigger: 'click',
+		type: 'year',
+  		range: true,
+  		done: function(value, date ,endDate){
+    		getNewData1(value)
+  		}
+	})
+	
+	// 选择时间段1 laydate
+	laydate.render({
+  		elem: '#yearRange2',
+		trigger: 'click',
+		value: defaultDate,
+		type: 'year',
+  		range: true,
+  		done: function(value, date ,endDate){
+  			getPersonTime(value)
+  		}
+	})
+</script>
+</body>
+</html>

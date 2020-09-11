@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>危化药剂出入库记录</title>
+<link href="css/base.css" type="text/css" rel="stylesheet">
+<link href="css/main.css" type="text/css" rel="stylesheet">
+<link href="css/page.css" type="text/css" rel="stylesheet">
+
+
+<script src="js/jquery-1.8.2.min.js" type="text/jscript"></script>
+<script src="laydate/laydate.js"></script>
+<script src="js2/loginUser.js" type="text/jscript"></script>
+<script src="js2/initialization.js" type="text/jscript"></script>
+<script type="text/jscript">
+//日期范围
+laydate.render({
+  elem: '#test'
+  ,range: true
+});
+</script>
+<script type="text/jscript">
+$(document).ready(function(){
+	var url = location.search;
+	var theRequest = new Object();
+	if(url.indexOf( "?" ) != -1){
+	    var str = url.substr( 1 );
+        var strs = str.split( "&" );
+        for ( var i = 0; i < strs.length; i++ ) {
+            theRequest[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+        }
+        console.log( theRequest ); //此时的theRequest就是我们需要的参数；
+        }
+    var manageID = theRequest.manageID;
+	
+	$("#queryBtn").on("click", function(){
+		var time = $("#test").val();
+		var type = $("#type").find("option:selected").val();
+
+		queryList(time, type, manageID);
+	});
+
+	queryList('','',manageID);
+});
+
+function queryList(time, type, manageId)
+{
+	$.ajax({ 
+		type: "post", 
+		url: "Device?method=MedicineRecord", 
+		data: {"time": time, "manageId": manageId, "type": type},
+		dataType: "json", 
+		success: function (data) { 
+			if (data.flag == "0")
+			{
+				$("#list").empty();
+				var thElement = createTHElement();
+				$("#list").append(thElement);
+
+				$.each(data.list, function(a, b){
+					var element = createElement(b);
+					$("#list").append(element);
+				});
+			}
+			else if (data.flag == "3")
+			{
+				$(location).attr('href', 'login.html');
+			}
+		}, 
+		error: function (XMLHttpRequest, textStatus, errorThrown) { 
+			alert(errorThrown); 
+		} 
+	});
+}
+
+function createTHElement()
+{
+	var str = "";
+	str += "<tr>";
+	str += "<th scope='col'>药剂批次</th>";
+	str += "<th scope='col'>药剂编码</th> ";
+	str += "<th scope='col'>药剂名称</th> ";
+	str += "<th scope='col'>记录员</th> ";
+	str += "<th scope='col'>记录时间</th> ";
+	str += "<th scope='col'>数量</th> ";
+	str += "<th scope='col'>类型</th> ";
+	str += "</tr>";
+	return str;
+}
+
+function createElement(obj)
+{
+	var str = "";
+
+	str += "<tr manageID='";
+	str += obj.ManageID;
+	str += "'>";
+
+	str += "<td scope='col'>";
+	str += obj.MedicineBatch;
+	str += "</td>";
+
+	str += "<td scope='col'>";
+	str += obj.MedicineCode;
+	str += "</td>";
+
+	str += "<td scope='col'>";
+	str += obj.MedicineName;
+	str += "</td>";
+	
+
+	str += "<td scope='col'>";
+	str += obj.RecordName;
+	str += "</td>";
+	
+	str += "<td scope='col'>";
+	str += obj.OperDate;
+	str += "</td>";
+
+	str += "<td scope='col'>";
+	str += obj.OperNum;
+	str += "</td>";
+	
+	str += "<td scope='col'>";
+	str += obj.RecordType;
+	str += "</td>";
+
+	str += "</tr>";
+	
+	return str;
+}	
+	
+</script>
+<!--[if lte IE 9]><script src="/js/selectivizr.js"></script><![endif]-->
+</head>
+
+<body>
+<div class="pacs_wrapper">
+	<div class="left">
+	
+		<div class="logo">
+			<div class="pic_lg"></div>
+			<p>龙岗区第三人民医院</p>
+		</div>
+		<div class="tree">
+			<ul>
+			   <li id="potionManage">
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>药剂管理</span></a>
+                    <ul>
+                        <li id="ordinary"><a class="second_level" href="ordinary_potion.html"><i class="ico-5"></i> <span>普通药剂</span></a></li>
+                        <li id="dangerous" class="selected"><a class="second_level" href="dangerous_potion.html"><i class="ico-6"></i> <span>危化药剂</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>设备管理</span></a>
+                    <ul>
+						<li><a class="second_level" href="equipment_summary_index.html"><i class="ico-1"></i> <span>设备汇总</span></a></li>
+						<li><a class="second_level" href="device_report.html"><i class="ico-2"></i> <span>设备报表</span></a></li>
+						<li ><a class="second_level" href="Important_Reminder.html"><i class="ico-3"></i> <span>重要提醒</span></a></li>
+                        <li><a class="second_level" href="add_Fault_Repair.html"><i class="ico-4"></i> <span>故障报修</span></a></li>
+                        <li><a class="second_level" href="repair_record.html"><i class="ico-5"></i> <span>维修记录</span></a></li>
+                        <li><a class="second_level" href="maintenance_record.html" ><i class="ico-6"></i> <span>保养记录</span></a></li>
+                        <li><a class="second_level" href="check.html"><i class="ico-7"></i> <span>检测记录</span></a></li>
+                        <li><a class="second_level" href="device_usage_record.html"><i class="ico-5"></i> <span>设备使用记录</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>工作管理</span></a>
+                    <ul>
+						<li id="handover"><a class="second_level" href="change_shifts.html"><i class="ico-8"></i> <span>交接班</span></a></li>
+						<li id="dochandover"><a class="second_level" href="doctor_handover.html"><i class="ico-8"></i> <span>医生交接班</span></a></li>
+						<li id="techhandover"><a class="second_level" href="tech_handover.html"><i class="ico-8"></i> <span>技师交接班</span></a></li>
+            			<li id="docwork"><a class="second_level" href="pages/workload/ReportDoctor.html"><i class="ico-17"></i> <span>医生工作量统计</span></a></li>
+						<li id="techwork"><a class="second_level" href="pages/technician/technician.html"><i class="ico-18"></i> <span>技师工作量统计</span></a></li>
+           			    <li id="ImageQuality"><a class="second_level" href="pages/ImageQuality/ImageQuality.html"><i class="ico-19"></i> <span>图像质量统计</span></a></li>
+                        <li id="ReportQuality"><a class="second_level" href="pages/ReportQuality/ReportQuality.html"><i class="ico-20"></i> <span>报告质量统计</span></a></li>
+                        <li id="QualityControl"><a class="second_level" href="pages/QualityControl/QualityControl.html"><i class="ico-20"></i> <span>质控数量统计</span></a></li>
+            <li id="pathology"><a class="second_level" href="pages/pathology/Physicians.html"><i class="ico-17"></i> <span>病理百张床位统计</span></a></li>
+            <li id="SpecimenNormalization"><a class="second_level" href="pages/SpecimenNormalization/SpecimenNormalization.html"><i class="ico-17"></i> <span>规范化固定率统计</span></a></li>
+            <li id="DyeingSlice"><a class="second_level" href="pages/DyeingSlice/DyeingSlice.html"><i class="ico-17"></i> <span>染色切片优良率统计</span></a></li>
+            <li id="Diagnosis"><a class="second_level" href="pages/Diagnosis/Diagnosis.html"><i class="ico-17"></i> <span>病理诊断及时率统计</span></a></li>
+            <li id="Histopathologic"><a class="second_level" href="pages/Histopathologic/Histopathologic.html"><i class="ico-17"></i> <span>组织诊断及时率统计</span></a></li>
+            <li id="Cytologic"><a class="second_level" href="pages/Cytologic/Cytologic.html"><i class="ico-17"></i> <span>细胞诊断及时率统计</span></a></li>
+            <li id="MolecularIndoor"><a class="second_level" href="pages/MolecularIndoor/MolecularIndoor.html"><i class="ico-17"></i> <span>分子室内质控合格率</span></a></li>
+            <li id="ImmBetRoom"><a class="second_level" href="pages/ImmBetRoom/ImmBetRoom.html"><i class="ico-17"></i> <span>免疫组化室间合格率</span></a></li>
+            <li id="MolecularBetRoom"><a class="second_level" href="pages/MolecularBetRoom/MolecularBetRoom.html"><i class="ico-17"></i> <span>分子室间质评合格率</span></a></li>
+            <li id="CytQuality"><a class="second_level" href="pages/CytQuality/CytQuality.html"><i class="ico-17"></i> <span>细胞诊断质控符合率</span></a></li>
+            <li id="Paraffin"><a class="second_level" href="pages/Paraffin/Paraffin.html"><i class="ico-17"></i> <span>快速石蜡诊断符合率</span></a></li>
+
+                    </ul>
+                </li>
+                <li>
+                    <a class="first_level"><i class="icon-plus-sign"></i> <span>人员管理</span></a>
+                    <ul>
+						<li ><a class="second_level" href="personal_management.html"><i class="ico-10"></i> <span>人员管理</span></a></li>
+						<!-- 
+                        <li><a class="second_level"><i class="ico-11"></i> <span>分组管理</span></a></li>
+                         -->
+                        <li ><a class="second_level" href="health_check.html"><i class="ico-12"></i> <span>体检记录</span></a></li>
+                        <li><a class="second_level" href="personal_dose.html"><i class="ico-13"></i> <span>个人剂量</span></a></li>
+                        <li ><a class="second_level" href="recuperation_record.html"><i class="ico-14"></i> <span>疗养记录</span></a></li>
+                        <li><a class="second_level" href="protection_training.html"><i class="ico-15"></i> <span>防护培训</span></a></li>
+                        <li ><a class="second_level" href="health_record.html"><i class="ico-16"></i> <span>保健假记录</span></a></li>
+                    </ul>
+                </li>
+            </ul>
+		</div>	
+	</div>
+   <div class="main">
+			<div class="top_contorl">
+				
+					<div class="t-l"><a class="back" href="dangerous_input.html"><i class="back_btn"></i><span>返回</span></a></div>
+				<!--	<div class="t-r"><a class="save" href="">保存</a></div>
+				-->
+				<div class="msg_login">
+					<div class="user"><i class="pic"></i><span id="loginUser"></span></div>
+					<div class="btn"><i></i></div>
+				</div>
+			</div>		
+			<div class="container">
+				<div class="equipment_summary">
+					
+					<div style="padding: 0;" class="content">
+						<form>
+							<ul style="margin:0;">
+								
+								<div style="margin:0" class="form">
+									<li>
+										<label class="f14">记录时间：</label>
+										<!--  <input type="date" alt="" value="" placeholder="" id="test1">-->
+										<input type="text" id="test" placeholder="年/月/日  - 年/月/日">
+									</li>
+									<li style="width: 10%;">
+										<select name="" id="type" style="width: 100px">
+											<option value="">全部</option>
+											<option value="0">入库</option>
+											<option value="1">出库</option>
+										</select>
+									</li>
+									<li style="width: 10%;">
+										<a class="submit" href="javascript:void(0)" id="queryBtn">查询</a>	
+									</li>
+								</div>
+							</ul>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="container">
+				
+				<div class="title f14 purple">危化药剂出入库记录</div>
+				<div class="reminder">
+					<table class="re-table">
+						  <tbody id="list">
+							
+						  </tbody>
+					</table>
+				</div>
+			</div>
+   </div>
+    
+</div>    
+<!--end of  pacs_wrapper -->
+
+</body>
+</html>

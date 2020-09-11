@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>登录</title>
+<link href="css/base.css" type="text/css" rel="stylesheet">
+<link href="css/main.css" type="text/css" rel="stylesheet">
+<link href="css/page.css" type="text/css" rel="stylesheet">
+
+
+<script src="js/jquery-1.8.2.min.js" type="text/jscript"></script>
+<script src="js2/initialization.js" type="text/jscript"></script>
+<script type="text/javascript">
+	function loginFunc()
+	{
+		var obj = {};
+		obj.userid = $("#userid").val();
+		obj.password = $("#password").val();
+		$.ajax({ 
+			type: "get", 
+			url: "Device?method=login", 
+			contentType: "application/json; charset=utf-8",
+			data: obj,
+			dataType: "json", 
+			success: function (data) { 
+				if (data.flag == "0")
+				{
+					$(location).attr('href', 'equipment_summary_index.html');
+				}
+				else
+				{
+					alert(data.msg);
+				}
+			}, 
+			error: function (XMLHttpRequest, textStatus, errorThrown) { 
+				alert(errorThrown); 
+			} 
+		});	
+	}
+</script>
+<!--[if lte IE 9]><script src="/js/selectivizr.js"></script><![endif]-->
+</head>
+
+<body>
+<div class="wrapper-login">
+	
+   <div class="box_login">
+  		<div  class="logo">PACS后台管理系统</div>
+  		<div style="display: none" class="error">你输入的用户名不对</div>
+   		<form action="javascript:void(0)">
+   			<div class="lg_form">
+				<input type="text" placeholder="请输入用户名" id="userid">
+				<input type="password" placeholder="请输入密码" id="password">
+				<button type="submit" onclick="loginFunc()">登录</button>
+   			</div>
+   		</form>
+   </div>
+</div>    
+<!--end of  pacs_wrapper -->
+	
+</body>
+</html>

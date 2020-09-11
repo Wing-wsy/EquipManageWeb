@@ -1,0 +1,49 @@
+/* Scss Document */
+/*-----------------------*/
+/* ^table                */
+/*-----------------------*/
+.table {
+  width: 100%; }
+  .table th, .table td {
+    padding: 0 0.5rem; }
+
+.table-fixed {
+  table-layout: fixed; }
+
+.table-border th,
+.table-border td {
+	border: 1px solid #ececec;
+  }
+.border_dashed tr{
+	border-top: 1px solid #ececec;
+	border-bottom: 1px solid #ececec;
+	}
+.border_dashed th{
+	border-right: 1px solid #ececec;
+	}
+.border_dashed td{
+	border-left: 1px dashed #ececec;
+	}
+.border_dashed tr td:first-child{
+	border-left: none;
+	}
+.thead th,
+thead th {
+  background-color: #f4f4f4; }
+
+.table-hover tbody tr:hover > td {
+  background-color: #f7f5f5; }
+
+.table-striped tbody > tr:nth-child(even) > td {
+  background-color: #f9f9f9; }
+
+.table-striped3 tbody > tr:nth-child(odd) > td {
+  background-color: white; }
+
+.table-line {
+  _border-bottom: 1px solid #e6e2e1; }
+  .table-line th, .table-line td {
+    border-top: 1px solid #e6e2e1; }
+  .table-line thead:first-child tr:first-child th,
+  .table-line thead:first-child tr:first-child td {
+    border-top: 0; }
